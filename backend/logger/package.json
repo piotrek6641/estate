@@ -1,8 +1,9 @@
 {
-  "name": "listings",
+  "name": "logger",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,10 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "logger": "file:../logger"
+    "pino": "^8.16.1"
   },
   "devDependencies": {
     "@types/node": "^20.8.8",
+    "pino-pretty": "^10.2.3",
     "typescript": "^5.2.2"
   }
 }

@@ -1,26 +1,27 @@
-import { createServer } from "http";
-import { databaseClient } from "./databaseClient/databaseClient";
+import http = require('http');
+import { createProxyServer } from "http-proxy"
 
-const port = process.env.PORT;
-const dbClient = new databaseClient();
-const server = createServer();
+const proxy = createProxyServer();
 
-server.on("request", async (req, res) => {
-    console.log("received new server request", req.method, req.url);
-    if (req.url === "/connect-to-db" && req.method === "GET") {
-        try {
-            await dbClient.sendHandshake();
-            res.writeHead(200, { "content-type": "text/plain" });
-            res.end("Successfully connected to db ;)");
-        } catch {
-            res.writeHead(500);
-            res.end("Internal server error");
-        }
-    } else{
-        res.writeHead(200, { "Content-Type": "text/plain" });
-        res.end("Hello, World!\n");
+const gateway = http.createServer((req, res) => {
+    const routes: { [key: string]: string } = {
+    'service1': 'http://localhost:11000'
+    };
+    if (!req.url) return
+    const path = req.url.split('/')[1]; // Extract the first part of the path
+    console.log(path)
+
+  // Check if the path is in the routes object
+    if (routes[path]) {
+    const target = routes[path];
+    proxy.web(req, res, { target });
+    } else {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Route not found');
     }
 });
-server.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+
+const port = 3000; // Set the port you want to listen on
+gateway.listen(port, () => {
+    console.log(`Complex Gateway API listening on port ${port}`);
 });

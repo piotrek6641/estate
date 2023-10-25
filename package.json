@@ -1,0 +1,12 @@
+{
+  "name": "estate",
+  "version": "1.0.0",
+  "private": "true",
+  "scripts": {
+    "start:api-gateway": "ts-node backend/ApiGateway/src/index.ts",
+    "start:listings": "ts-node backend/Listings/src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

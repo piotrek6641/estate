@@ -4,6 +4,6 @@ WORKDIR /app
 
 RUN mkdir backend
 
-COPY ./backend backend
+COPY ./backend/ApiGateway backend/ApiGateway
 
-CMD [ "npx", "ts-node", "backend/src/index.ts" ]
+CMD [ "npx", "ts-node", "backend/ApiGateway/src/index.ts" ]

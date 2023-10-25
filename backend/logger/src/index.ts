@@ -1,64 +1,26 @@
-import * as pino from "pino";
+const chalk = require("chalk")
+export class Logger {
+    log(message: any, logLevel = 'info') {
+      const timestamp = new Date().toISOString();
+      const logEntry = `[${timestamp}] [${logLevel.toUpperCase()}] ${message}`;
 
-export default function createLogger(serviceName: any) {
+      let colorFunction;
+      switch (logLevel) {
+        case 'info':
+          colorFunction = chalk.blue;
+          break;
+        case 'warning':
+          colorFunction = chalk.yellow;
+          break;
+        case 'error':
+          colorFunction = chalk.red;
+          break;
+        default:
+          colorFunction = chalk.white;
+      }
 
-    const customSerializer = (log: any) => {
-        return {
-        serviceName,
-        ...log,
-        };
-    };
-
-    const logger = pino.pino({
-        serializers: {
-            customSerializer
-        },
-        transport: {
-            target: 'pino-pretty',
-            options: {
-                colorize: true
-                }
-            }
-    });
-    return logger
-}
-export class CustomLogger {
-    customSerializer: any;
-    serviceName: string;
-    logger: any;
-    constructor(serviceName: string) {
-    this.serviceName = serviceName;
-    this.customSerializer = (log: any) => {
-        return {
-        serviceName,
-        ...log,
-        };
-    };
-    this.logger = pino.pino({
-        transport: {
-            target: 'pino-pretty',
-            options: {
-                colorize: true
-                }
-            }
-        });
-    }
-
-    log(level: string, message: any, data?: any) {
-        const logData = {
-        serviceName: this.serviceName,
-        data,
-        };
-
-        this.logger[level](logData, message);
-    }
-
-    info(message: any, data?: any) {
-        this.log('info', message, data);
-    }
-
-    error(message: any, data?: any) {
-        this.log('error', message, data);
+      console.log(colorFunction(logEntry));
     }
   }
+
 

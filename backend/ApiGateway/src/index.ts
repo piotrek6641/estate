@@ -1,9 +1,9 @@
 import http = require('http');
 import { createProxyServer } from "http-proxy"
-import Logger from "logger";
+import { CustomLogger } from "logger"
 
 const proxy = createProxyServer();
-const logger = Logger;
+const logger = new CustomLogger("ApiGateway");
 
 const gateway = http.createServer((req, res) => {
     const routes: { [key: string]: string } = {

@@ -1,11 +1,47 @@
-import * as pino from "pino";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const chalk = require("chalk");
+import { LogLevelStrings } from "types";
+export class Logger {
+    private serviceName: string;
+    constructor(serviceName: string) {
+        this.serviceName = serviceName;
+    }
+    public log(message: string, logLevel: LogLevelStrings) {
+        const timestamp = new Date().toISOString();
 
-const Logger = pino.pino({
-    transport: {
-        target: 'pino-pretty',
-        options: {
-            colorize: true
-            }
+        let colorFunction;
+        switch (logLevel) {
+        case "info":
+            colorFunction = chalk.blue;
+            break;
+        case "debug":
+            colorFunction = chalk.blueBright;
+            break;
+        case "warning":
+            colorFunction = chalk.yellow;
+            break;
+        case "error":
+            colorFunction = chalk.red;
+            break;
+
+        default:
+            colorFunction = chalk.white;
         }
-});
-export default Logger;
+
+        console.log(`[${timestamp}] [${chalk.magenta(this.serviceName)}] [${colorFunction(logLevel.toUpperCase())}] ${message}`);
+    }
+    public info(message: string) {
+        this.log(message, "info");
+    }
+    public debug(message: string) {
+        this.log(message, "debug");
+    }
+    public error(message: string) {
+        this.log(message, "error");
+    }
+    public warning(message: string) {
+        this.log(message, "warning");
+    }
+}
+
+

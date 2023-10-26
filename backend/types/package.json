@@ -1,5 +1,5 @@
 {
-  "name": "logger",
+  "name": "types",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -10,12 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "chalk": "^4.1.2"
-  },
   "devDependencies": {
-    "@types/node": "^20.8.8",
-    "typescript": "^5.2.2",
-    "types": "../types"
+    "typescript": "^5.2.2"
   }
 }

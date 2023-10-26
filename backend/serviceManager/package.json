@@ -1,0 +1,20 @@
+{
+  "name": "servicemanager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "logger": "file:../logger",
+    "apiGateway": "file:../ApiGateway",
+    "listings": "file:../Listings"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}

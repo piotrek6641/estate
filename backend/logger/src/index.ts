@@ -1,11 +1,24 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const chalk = require("chalk");
+import { Writable } from "stream";
 import { LogLevelStrings } from "types";
 export class Logger {
     private serviceName: string;
+    public logStream;
     constructor(serviceName: string) {
         this.serviceName = serviceName;
+        this.logStream = new Writable({
+            write(chunk, encoding, callack) {
+                console.log(chunk.toString());
+                callack();
+            },
+        });
+        process.stdout.pipe(this.logStream);
     }
+    public pipe(logger: Logger) {
+        process.stdout.pipe(logger.logStream);
+    }
+
     public log(message: string, logLevel: LogLevelStrings) {
         const timestamp = new Date().toISOString();
 

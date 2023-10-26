@@ -7,12 +7,7 @@ export class Logger {
     public logStream;
     constructor(serviceName: string) {
         this.serviceName = serviceName;
-        this.logStream = new Writable({
-            write(chunk, encoding, callack) {
-                console.log(chunk.toString());
-                callack();
-            },
-        });
+        this.logStream = new Writable();
         process.stdout.pipe(this.logStream);
     }
     public pipe(logger: Logger) {

@@ -1,15 +1,23 @@
 import { createServer } from "http";
 import { Logger } from "logger";
 
-const logger = new Logger("Listings");
-const server = createServer((req, res) => {
-    logger.info(`received request { host: ${req.headers.host}url: ${req.url} method: ${req.method} }`);
-    res.writeHead(200, { "Content-Type": "text/plain" });
-    res.end("Hello, this is a simple server!\n");
-});
+export class Listings{
+    logger = new Logger("Listings");
+    port = 11000;
+    server;
+    constructor() {
+        this.server = this.createServer();
+        this.server.listen(this.port, () => {
+            this.logger.info(`Server is listening on port ${this.port}`);
+        });
 
-const port = 11000;
+    }
+    createServer() {
+        return createServer((req, res) => {
+            this.logger.info(`received request { host: ${req.headers.host}url: ${req.url} method: ${req.method} }`);
+            res.writeHead(200, { "Content-Type": "text/plain" });
+            res.end("Hello, this is a simple server!\n");
+        });
+    }
+}
 
-server.listen(port, () => {
-    logger.info(`Server is listening on port ${port}`);
-});

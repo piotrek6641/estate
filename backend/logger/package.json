@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@types/node": "^20.8.8",
-    "typescript": "^5.2.2",
-    "types": "../types"
+    "typescript": "^5.2.2"
   }
 }

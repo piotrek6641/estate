@@ -1,7 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const chalk = require("chalk");
 import { Writable } from "stream";
-import { LogLevelStrings } from "types";
+import { inspect } from "util";
+import { logPrompt, LogLevelStrings} from "./types";
 export class Logger {
     private serviceName: string;
     public logStream;
@@ -18,7 +19,7 @@ export class Logger {
         logger.logStream.pipe(this.logStream);
     }
 
-    public log(message: string, logLevel: LogLevelStrings) {
+    public log(message: string, logLevel: LogLevelStrings, object?: unknown) {
         const timestamp = new Date().toISOString();
 
         let colorFunction;
@@ -35,24 +36,23 @@ export class Logger {
         case "error":
             colorFunction = chalk.red;
             break;
-
         default:
             colorFunction = chalk.white;
         }
 
-        this.logStream.write(`[${chalk.green(timestamp)}] [${chalk.magenta(this.serviceName)}] [${colorFunction(logLevel.toUpperCase())}] ${message}`);
+        this.logStream.write(`[${chalk.green(timestamp)}] [${chalk.magenta(this.serviceName)}] [${colorFunction(logLevel.toUpperCase())}] ${message}${object !== undefined ? ` ${inspect(object, { depth: null, colors: true, compact: true })}` : ""}`);
     }
-    public info(message: string) {
-        this.log(message, "info");
+    public info(message: logPrompt) {
+        this.log(message.message, "info", message.object);
     }
-    public debug(message: string) {
-        this.log(message, "debug");
+    public debug(message: logPrompt) {
+        this.log(message.message, "debug", message.object);
     }
-    public error(message: string) {
-        this.log(message, "error");
+    public error(message: logPrompt) {
+        this.log(message.message, "error", message.object);
     }
-    public warning(message: string) {
-        this.log(message, "warning");
+    public warning(message: logPrompt) {
+        this.log(message.message, "warning", message.object);
     }
 }
 

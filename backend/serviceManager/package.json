@@ -10,9 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "logger": "file:../logger",
     "apiGateway": "file:../ApiGateway",
-    "listings": "file:../Listings"
+    "databaseService": "file:../databaseService",
+    "listings": "file:../Listings",
+    "logger": "file:../logger"
   },
   "devDependencies": {
     "typescript": "^5.2.2"

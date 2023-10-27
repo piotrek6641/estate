@@ -1,19 +1,22 @@
 import { createServer } from "http";
 import { Logger } from "logger";
+import { Router } from "./router";
 
 export class Listings{
     logger = new Logger("Listings");
     port = 11000;
     server;
+    router: Router;
     constructor() {
         this.server = this.createServer();
+        this.router = new Router();
         this.server.listen(this.port, () => {
             this.logger.info(`Server is listening on port ${this.port}`);
         });
 
     }
     createServer() {
-        return createServer((req, res) => {
+        return createServer(async (req, res) => {
             this.logger.info("received request", {
                 host: req.headers.host,
                 url: req.url,
@@ -26,9 +29,11 @@ export class Listings{
                 res.end(JSON.stringify({responseStatus: 400, responseMessage: "Bad request"}));
                 return;
             }
-            this.createResponseLog(req.headers.host, 200, "OK");
-            res.writeHead(200, { "Content-Type": "text/plain" });
-            res.end("Hello, this is a simple server!\n");
+            if (!req.url) return;
+            const {statusCode, message} = await this.router.routeRequest(req.url);
+            this.createResponseLog(req.headers.host, statusCode, message);
+            res.writeHead(statusCode, { "Content-Type": "text/plain" });
+            res.end(message);
         });
     }
     private createResponseLog(host?:string, status?: number, message?: string) {
@@ -37,7 +42,7 @@ export class Listings{
         } , response: {
             responseStatus: status,
             responseMessage: message
-        } })
+        } });
     }
 }
 

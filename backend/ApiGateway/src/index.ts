@@ -35,10 +35,9 @@ export class ApiGateway {
                             this.logger.error(`Error when forwarding request to ${target}: ${err.message}`);
                             res.writeHead(500, { "Content-Type": "text/plain" });
                             res.end("Proxy Error");
-                        } else {
-                            this.logger.info(`got response ${res.statusCode} from ${target}`);
                         }
                     });
+                    this.logger.info(`got response ${res.statusCode} from ${target}`);
                 } catch(e) {
                     this.logger.warning(e as string);
                 }

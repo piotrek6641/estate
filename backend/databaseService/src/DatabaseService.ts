@@ -22,9 +22,7 @@ export class DatabaseService{
     }
     async pullImage() {
         return this.dockerClient.pullDBImage()
-            .then((data) => {
-                console.log(data);
-            }).catch((e) => {
+            .catch((e) => {
                 this.logger.error("failed to pull db image");
                 throw new Error(e);
             });

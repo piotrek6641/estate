@@ -13,7 +13,7 @@ export class DockerClient{
     logger = new Logger("DockerClient");
     async pullDBImage() {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise<string>(async (res, rej) => {
+        return new Promise<void>(async (res, rej) => {
             try {
                 const stream = await docker.createImage({
                     fromImage: "mongo:7.0"
@@ -22,7 +22,7 @@ export class DockerClient{
 
                 stream.on("end", () => {
                     this.logger.info("Image creation finished.");
-                    res("finished");
+                    res();
                 });
 
                 stream.on("error", (err) => {

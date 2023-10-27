@@ -37,8 +37,7 @@ export class ApiGateway {
                             res.end("Proxy Error");
                         }
                     });
-                    this.logger.info(`got response ${res.statusCode} from ${target}`);
-                } catch(e) {
+                } catch (e) {
                     this.logger.warning(e as string);
                 }
             } else {

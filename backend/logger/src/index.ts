@@ -7,11 +7,15 @@ export class Logger {
     public logStream;
     constructor(serviceName: string) {
         this.serviceName = serviceName;
-        this.logStream = new Writable();
-        process.stdout.pipe(this.logStream);
+        this.logStream = new Writable({
+            write(chunk: Buffer, _encoding, callback) {
+                console.log(chunk.toString());
+                callback();
+            },
+        });
     }
     public pipe(logger: Logger) {
-        process.stdout.pipe(logger.logStream);
+        logger.logStream.pipe(this.logStream);
     }
 
     public log(message: string, logLevel: LogLevelStrings) {
@@ -36,7 +40,7 @@ export class Logger {
             colorFunction = chalk.white;
         }
 
-        console.log(`[${timestamp}] [${chalk.magenta(this.serviceName)}] [${colorFunction(logLevel.toUpperCase())}] ${message}`);
+        this.logStream.write(`[${chalk.green(timestamp)}] [${chalk.magenta(this.serviceName)}] [${colorFunction(logLevel.toUpperCase())}] ${message}`);
     }
     public info(message: string) {
         this.log(message, "info");

@@ -12,7 +12,6 @@ export class Router{
         case "get-all":
             return new Promise<{ statusCode: number, message: string }>((resolve, reject) => {
                 request(this.databaseServiceUrl, (res) => {
-                    console.log("i am here");
                     const statusCode: number | undefined = res.statusCode;
                     const message: string | undefined = res.statusMessage;
 

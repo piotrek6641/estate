@@ -54,7 +54,7 @@ export class DockerClient{
             await container.start();
             this.logger.info("Container created and started successfully.");
         } catch (error) {
-            this.logger.error("Error creating and starting the container:" + error);
+            throw new Error("Error creating and starting the container:" + error);
         }
     }
     async waitForContainerToBoot() {

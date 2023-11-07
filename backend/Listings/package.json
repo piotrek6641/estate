@@ -11,9 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "http-proxy": "^1.18.1",
     "logger": "file:../logger"
   },
   "devDependencies": {
+    "@types/http-proxy": "^1.17.13",
     "@types/node": "^20.8.8",
     "typescript": "^5.2.2"
   }

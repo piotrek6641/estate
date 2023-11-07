@@ -1,14 +1,16 @@
 import * as http from "http";
-import { validateMethod } from "./validators";
-import { Router } from "./router";
+import { validateMethod } from "./utils";
+import { Router } from "./router/router";
 
 export class DbServer {
     private server: http.Server;
     private router: Router;
 
     constructor(private port: number = 13000) {
-        this.server = http.createServer(this.handleRequest.bind(this));
         this.router = new Router();
+        this.server = http.createServer((req, res) => {
+            this.router.handleRequest(req, res);
+        });
     }
 
     private handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {

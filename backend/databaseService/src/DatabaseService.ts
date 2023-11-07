@@ -8,6 +8,7 @@ export class DatabaseService{
     logger;
     dockerClient: DockerClient;
     dbServer: DbServer;
+    connectionString = "mongodb://localhost:27017/mydatabase";
     constructor() {
         this.dockerClient = new DockerClient();
         this.logger = new Logger("DatabaseService");
@@ -21,7 +22,8 @@ export class DatabaseService{
             await this.startImage();
             await this.sendHandshake();
         } catch (error) {
-            this.logger.error("Error starting the database:" + error);
+            this.logger.error("Error starting the database");
+            throw error;
         }
     }
     async startServer() {
@@ -42,17 +44,13 @@ export class DatabaseService{
 
     }
     private async sendHandshake() {
-        const connectionString = "mongodb://localhost:27017/mydatabase";
-
         try {
-            const client = new MongoClient(connectionString, {
+            const client = new MongoClient(this.connectionString, {
             });
             await client.connect();
 
-            this.logger.info("Connected to MongoDB");
-
             client.close();
-            this.logger.info("Connection closed");
+            this.logger.info("DB handshake sent successfully");
         } catch (error) {
             this.logger.error("Error connecting to MongoDB:" + error);
         }

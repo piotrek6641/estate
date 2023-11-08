@@ -1,5 +1,5 @@
 {
-  "name": "databaseservice",
+  "name": "@estates/databaseservice",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",

@@ -1,24 +1,20 @@
 {
-  "name": "backend",
+  "name": "@estates/logger",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "start": "ts-node src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "monsta",
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "http-proxy": "^1.18.1",
-    "ts-node": "^10.9.1",
-    "logger": "../logger"
+    "chalk": "^4.1.2"
   },
   "devDependencies": {
-    "@types/http-proxy": "^1.17.13",
-    "@types/node": "^20.8.7",
+    "@types/node": "^20.8.8",
     "typescript": "^5.2.2"
   }
 }

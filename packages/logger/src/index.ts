@@ -1,8 +1,10 @@
+/* eslint-disable no-console */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const chalk = require("chalk");
+import chalk from "chalk";
 import { Writable } from "stream";
 import { inspect } from "util";
 import { logPrompt, LogLevelStrings} from "./types";
+import { Buffer } from "buffer";
 export class Logger {
     private serviceName: string;
     public logStream;
@@ -42,18 +44,18 @@ export class Logger {
 
         this.logStream.write(`[${chalk.green(timestamp)}] [${chalk.magenta(this.serviceName)}] [${colorFunction(logLevel.toUpperCase())}] ${message}${object !== undefined ? ` ${inspect(object, { depth: null, colors: true, compact: true })}` : ""}`);
     }
-    public info(message: logPrompt) {
-        this.log(message.message, "info", message.object);
-    }
-    public debug(message: logPrompt) {
-        this.log(message.message, "debug", message.object);
-    }
-    public error(message: logPrompt) {
-        this.log(message.message, "error", message.object);
-    }
-    public warning(message: logPrompt) {
-        this.log(message.message, "warning", message.object);
-    }
+    public info: logPrompt = (message, object) => {
+        this.log(message, "info", object);
+    };
+    public debug: logPrompt = (message, object) => {
+        this.log(message, "debug", object);
+    };
+    public error: logPrompt = (message, object) => {
+        this.log(message, "error", object);
+    };
+    public warning: logPrompt = (message, object) => {
+        this.log(message, "warning", object);
+    };
 }
 
 

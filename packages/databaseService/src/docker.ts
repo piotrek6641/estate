@@ -1,22 +1,23 @@
 import Docker = require("dockerode");
-import { Logger } from "logger";
+import { Logger } from "@estates/logger";
+import process = require("process");
 const docker = new Docker();
 
 const containerName = "mongo-db";
 
 const envVariables = [
     "MONGO_INITDB_ROOT_USERNAME: root",
-    "MONGO_INITDB_ROOT_PASSWORD: example"
+    "MONGO_INITDB_ROOT_PASSWORD: example",
 ];
 
-export class DockerClient{
+export class DockerClient {
     logger = new Logger("DockerClient");
     async pullDBImage() {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise<void>(async (res, rej) => {
             try {
                 const stream = await docker.createImage({
-                    fromImage: "mongo:7.0"
+                    fromImage: "mongo:7.0",
                 });
                 stream.pipe(process.stdout);
 
@@ -29,7 +30,7 @@ export class DockerClient{
                     this.logger.error("Image creation error:" + err);
                     rej(err);
                 });
-            } catch(e) {
+            } catch (e) {
                 rej(e);
             }
         });
@@ -48,7 +49,7 @@ export class DockerClient{
                 Env: envVariables,
                 ExposedPorts: { "27017/tcp": {} },
                 HostConfig: {
-                    PortBindings: { "27017/tcp": [{ HostPort: "27017" }] }
+                    PortBindings: { "27017/tcp": [{ HostPort: "27017" }] },
                 },
             });
             await container.start();
@@ -71,7 +72,7 @@ export class DockerClient{
                     return;
                 }
             } catch (error) {
-            // Container may not be available immediately, so retry
+                // Container may not be available immediately, so retry
             }
 
             attempts++;

@@ -7,7 +7,7 @@ export class Router{
     }
     async routeRequest(requestUrl: string): Promise<{statusCode: number, message: string}> {
 
-        const urlArray = requestUrl.split("/").filter(part => part !== "");
+        const urlArray = requestUrl.split("/").filter((part) => part !== "");
         switch (urlArray[1]) {
         case "get-all":
             return new Promise<{ statusCode: number, message: string }>((resolve, reject) => {

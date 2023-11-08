@@ -1,10 +1,10 @@
 // import mysql = require("mysql2");
 import { DockerClient } from "./docker";
-import { Logger } from "logger";
+import { Logger } from "@estates/logger";
 import { MongoClient } from "mongodb";
 import { DbServer } from "./server";
 
-export class DatabaseService{
+export class DatabaseService {
     logger;
     dockerClient: DockerClient;
     dbServer: DbServer;
@@ -41,12 +41,10 @@ export class DatabaseService{
             .then(async () => {
                 return await this.dockerClient.waitForContainerToBoot();
             });
-
     }
     private async sendHandshake() {
         try {
-            const client = new MongoClient(this.connectionString, {
-            });
+            const client = new MongoClient(this.connectionString, {});
             await client.connect();
 
             client.close();
@@ -55,5 +53,4 @@ export class DatabaseService{
             this.logger.error("Error connecting to MongoDB:" + error);
         }
     }
-
 }

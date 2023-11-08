@@ -1,7 +1,7 @@
-import { Logger } from "logger";
-import { ApiGateway } from "apiGateway";
-import { Listings } from "listings";
-import { DatabaseService } from "databaseService";
+import { Logger } from "@estates/logger";
+import { ApiGateway } from "@estates/api-gateway";
+import { Listings } from "@estates/listings";
+import { DatabaseService } from "@estates/database-service";
 
 export class ServiceManager {
     logger;

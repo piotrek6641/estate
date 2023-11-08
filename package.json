@@ -2,9 +2,11 @@
   "name": "estate",
   "version": "1.0.0",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "start:service-manager": "ts-node-dev --respawn  backend/serviceManager/src/start.ts"
+    "start:service-manager": "ts-node-dev --respawn  packages/serviceManager/src/start.ts"
   },
   "keywords": [],
   "author": "",

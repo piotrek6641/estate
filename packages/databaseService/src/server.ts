@@ -5,8 +5,10 @@ import { Router } from "./router/router";
 export class DbServer {
     private server: http.Server;
     private router: Router;
+    private port: number;
 
-    constructor(private port: number = 13000) {
+    constructor(port: number = 13000) {
+        this.port = port;
         this.router = new Router();
         this.server = http.createServer((req, res) => {
             this.router.handleRequest(req, res);

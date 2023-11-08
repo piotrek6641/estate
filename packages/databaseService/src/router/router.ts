@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { createShortendUrl } from "estate-utils";
+import { createShortendUrl } from "@estates/utils";
 import { RequestString, defineApiRoutes } from "./routes";
 import { HttpMethod } from "../utils";
 

@@ -21,7 +21,7 @@ export class Listings {
             this.logger.info("Received request", {
                 host: req.headers.host,
                 url: req.url,
-                method: req.method
+                method: req.method,
             });
 
             this.proxy.web(req, res);
@@ -38,7 +38,7 @@ export class Listings {
             (res as ServerResponse).end("Proxy error");
         });
 
-        proxy.on("end", (req,res) => {
+        proxy.on("end", (req, res) => {
             this.createResponseLog(req.headers.host, res.statusCode, res.statusMessage);
         });
 
@@ -46,10 +46,10 @@ export class Listings {
     }
     private createResponseLog(host?: string, status?: number, message?: string) {
         this.logger.debug("Sending back response",{ target: {
-            host: host
+            host: host,
         } , response: {
             responseStatus: status,
-            responseMessage: message
+            responseMessage: message,
         } });
     }
 }

@@ -1,7 +1,4 @@
-export type logPrompt = {
-    message: string,
-    object?: unknown
-}
+export type logPrompt = (message: string, object?: unknown) => void;
 enum logLevel {
     "debug" = "debug",
     "info" = "info",

@@ -1,17 +1,17 @@
 import http = require("http");
 import { createProxyServer } from "http-proxy";
-import { Logger } from "logger";
+import { Logger } from "@estates/logger";
 
 export class ApiGateway {
     proxy = createProxyServer();
     logger = new Logger("ApiGateway");
     port = 3000;
     routes: { [key: string]: string } = {
-        "service1": "http://localhost:11000"
+        "service1": "http://localhost:11000",
     };
     proxyOptions = {
         followRecirects: true,
-        toProxy: true
+        toProxy: true,
     };
     gateway;
 
@@ -19,7 +19,7 @@ export class ApiGateway {
         this.gateway = this.createServer();
 
         this.gateway.listen(this.port, () => {
-            this.logger.info(`Complex Gateway API listening on port ${this.port}`);
+            this.logger.info(`API Gateway listening on port ${this.port}`);
         });
 
     }

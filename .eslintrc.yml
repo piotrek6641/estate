@@ -23,3 +23,28 @@ rules:
   semi:
     - error
     - always
+  comma-dangle:
+    - error
+    - always-multiline
+  no-unused-vars:
+  - error
+  - varsIgnorePattern: "^_"
+    argsIgnorePattern: "^_"
+    args: after-used
+    ignoreRestSiblings: true
+  no-console: warn
+  arrow-parens:
+    - error
+    - always
+  arrow-spacing: error
+  no-var: error
+  prefer-const: error
+  template-curly-spacing: error
+  no-else-return: error
+  no-undef: error
+  no-use-before-define: error
+  eqeqeq: error
+  no-prototype-builtins: error
+  no-extra-boolean-cast: error
+  no-multiple-empty-lines: 2
+  function-paren-newline: 0

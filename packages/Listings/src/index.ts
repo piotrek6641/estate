@@ -1,31 +1,34 @@
-import { ServerResponse, createServer } from "http";
-import { Logger } from "logger";
+import { IncomingMessage, Server, ServerResponse, createServer } from "http";
+import { Logger } from "@estates/logger";
 //import { Router } from "./router";
 import { createProxyServer } from "http-proxy";
 
 export class Listings {
     private logger = new Logger("Listings");
     private port = 11000;
-    private server;
-    private proxy;
-    constructor() {
-        this.server = this.createServer();
+    private server: Server<typeof IncomingMessage, typeof ServerResponse> | undefined;
+    private proxy: import("http-proxy") <IncomingMessage, ServerResponse<IncomingMessage>> | undefined;
+    public init() {
         this.proxy = this.createProxy();
+        this.server = this.createServer();
         this.server.listen(this.port, () => {
             this.logger.info(`Proxy server is listening on port ${this.port}`);
         });
     }
 
     private createServer() {
-        return createServer(async (req, res) => {
+        const server = createServer(async (req, res) => {
             this.logger.info("Received request", {
                 host: req.headers.host,
                 url: req.url,
                 method: req.method,
             });
-
+            if (!this.proxy) return;
             this.proxy.web(req, res);
+
+
         });
+        return server;
     }
 
     private createProxy() {

@@ -1,13 +1,16 @@
 import * as http from "http";
 import { validateMethod } from "./utils";
 import { Router } from "./router/router";
+import { Logger } from "@estates/logger";
 
 export class DbServer {
     private server: http.Server;
     private router: Router;
     private port: number;
+    private logger: Logger;
 
-    constructor(port: number = 13000) {
+    constructor(logger: Logger, port: number = 13000) {
+        this.logger = logger;
         this.port = port;
         this.router = new Router();
         this.server = http.createServer((req, res) => {
@@ -35,15 +38,22 @@ export class DbServer {
         response.end(routedResponse.message);
     }
 
-    public start() {
-        this.server.listen(this.port, () => {
-            console.log(`Server is running on port ${this.port}`);
+    public async start() {
+        return new Promise((resolve, reject) => {
+            this.server.listen(this.port, () => {
+                this.logger.info(`DB Server is running on port ${this.port}`);
+                resolve(this.server);
+            });
+            this.server.on("error", (err) => {
+                this.logger.error(`Server failed to start: ${err.message}`);
+                reject(err);
+            });
         });
     }
 
     public stop() {
         this.server.close(() => {
-            console.log("Server stopped");
+            this.logger.warning("Server stopped");
         });
     }
 }

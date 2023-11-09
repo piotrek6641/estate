@@ -13,6 +13,7 @@
   "dependencies": {
     "@estates/api-gateway": "*",
     "@estates/database-service": "*",
+    "@estates/event-bus": "^1.0.0",
     "@estates/listings": "*",
     "@estates/logger": "*"
   },

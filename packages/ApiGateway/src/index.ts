@@ -1,7 +1,6 @@
 import http = require("http");
 import { createProxyServer } from "http-proxy";
 import { Logger } from "@estates/logger";
-
 export class ApiGateway {
     proxy = createProxyServer();
     logger = new Logger("ApiGateway");
@@ -13,18 +12,16 @@ export class ApiGateway {
         followRecirects: true,
         toProxy: true,
     };
-    gateway;
+    gateway: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse> | undefined;
 
-    constructor() {
+    public async init() {
         this.gateway = this.createServer();
-
         this.gateway.listen(this.port, () => {
             this.logger.info(`API Gateway listening on port ${this.port}`);
         });
-
     }
 
-    createServer() {
+    private createServer() {
         return http.createServer((req, res) => {
             if (!req.url) return;
             const path = req.url.split("/")[1];
@@ -50,5 +47,4 @@ export class ApiGateway {
             }
         });
     }
-
 }

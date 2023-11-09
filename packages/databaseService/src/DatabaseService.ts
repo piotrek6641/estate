@@ -12,11 +12,13 @@ export class DatabaseService {
     constructor() {
         this.dockerClient = new DockerClient();
         this.logger = new Logger("DatabaseService");
-        this.dbServer = new DbServer();
-        this.startDB();
-        this.startServer();
+        this.dbServer = new DbServer(this.logger);
     }
-    async startDB() {
+    public async init() {
+        await this.startDB();
+        await this.startServer();
+    }
+    private async startDB() {
         try {
             await this.pullImage();
             await this.startImage();
@@ -26,8 +28,8 @@ export class DatabaseService {
             throw error;
         }
     }
-    async startServer() {
-        this.dbServer.start();
+    private async startServer() {
+        await this.dbServer.start();
     }
     private async pullImage() {
         return this.dockerClient.pullDBImage()

@@ -12,9 +12,10 @@
   "author": "monsta",
   "license": "ISC",
   "dependencies": {
+    "@estates/logger": "*",
+    "@estates/utils": "^1.0.0",
     "http-proxy": "^1.18.1",
-    "ts-node": "^10.9.1",
-    "@estates/logger": "*"
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@types/http-proxy": "^1.17.13",

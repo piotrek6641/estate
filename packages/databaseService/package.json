@@ -17,9 +17,9 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@estates/logger": "*",
+    "@estates/utils": "^1.0.0",
     "dockerode": "^4.0.0",
-    "mongodb": "^6.2.0",
-    "@estates/utils": "*",
-    "@estates/logger": "*"
+    "mongodb": "^6.2.0"
   }
 }

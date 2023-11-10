@@ -11,8 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "http-proxy": "^1.18.1",
-    "@estates/logger": "*"
+    "@estates/logger": "*",
+    "@estates/utils": "^1.0.0",
+    "http-proxy": "^1.18.1"
   },
   "devDependencies": {
     "@types/http-proxy": "^1.17.13",

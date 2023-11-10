@@ -1,24 +1,17 @@
 import * as http from "http";
 import { validateMethod } from "./utils";
 import { Router } from "./router/router";
-import { Logger } from "@estates/logger";
+import { AbstractHttpServer } from "@estates/utils";
 
-export class DbServer {
-    private server: http.Server;
+export class DbServer extends AbstractHttpServer {
     private router: Router;
-    private port: number;
-    private logger: Logger;
 
-    constructor(logger: Logger, port: number = 13000) {
-        this.logger = logger;
-        this.port = port;
+    constructor(port: number = 13000, serviceName: string ) {
+        super(port, serviceName);
         this.router = new Router();
-        this.server = http.createServer((req, res) => {
-            this.router.handleRequest(req, res);
-        });
     }
 
-    private handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {
+    handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {
         response.setHeader("Content-Type", "application/json");
         response.setHeader("Access-Control-Allow-Origin", "*");
 
@@ -36,24 +29,5 @@ export class DbServer {
         }
         response.writeHead(routedResponse.code);
         response.end(routedResponse.message);
-    }
-
-    public async start() {
-        return new Promise((resolve, reject) => {
-            this.server.listen(this.port, () => {
-                this.logger.info(`DB Server is running on port ${this.port}`);
-                resolve(this.server);
-            });
-            this.server.on("error", (err) => {
-                this.logger.error(`Server failed to start: ${err.message}`);
-                reject(err);
-            });
-        });
-    }
-
-    public stop() {
-        this.server.close(() => {
-            this.logger.warning("Server stopped");
-        });
     }
 }

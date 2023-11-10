@@ -22,8 +22,8 @@ export class ServiceManager {
     }
     async start() {
         await Promise.all([
-            await this.apiGateway.init(),
-            this.listings.init(),
+            await this.apiGateway.startServer(),
+            await this.listings.startServer(),
             await this.databaseService.init(),
         ]);
         this.eventBus.publish("init-state", "finished" );

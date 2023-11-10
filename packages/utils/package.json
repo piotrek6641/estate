@@ -12,5 +12,10 @@
   "license": "ISC",
   "devDependencies": {
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@estates/logger": "^1.0.0",
+    "@estates/types": "^1.0.0",
+    "http-proxy": "^1.18.1"
   }
 }

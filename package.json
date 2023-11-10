@@ -2,19 +2,22 @@
   "name": "estate",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "start:service-manager": "ts-node-dev --respawn  packages/serviceManager/src/start.ts"
+    "start:service-manager": "ts-node-dev --respawn  packages/serviceManager/src/start.ts",
+    "start:service-manager-process": "ts-node-dev --respawn  packages/serviceManager/src/startProcess.ts"
   },
+  "workspaces": [
+    "./packages/*"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^29.5.8",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "eslint": "^8.52.0",
+    "estate": "1.0.0",
     "ts-node-dev": "^2.0.0"
   }
 }

@@ -2,7 +2,7 @@ import { EventBus } from "@estates/event-bus";
 import { ServiceBuilder } from "./serviceBuilder";
 
 export async function start() {
-    const serviceBuilder = new ServiceBuilder();
+    const serviceBuilder = ServiceBuilder.getInstance();
     const eventBus = EventBus.getInstance();
 
     eventBus.subscribe("init-state", () => {
@@ -14,6 +14,7 @@ export async function start() {
     await serviceBuilder.startServiceManager();
 
     await serviceBuilder.waitForFinishBooting();
+
 }
 
 start();

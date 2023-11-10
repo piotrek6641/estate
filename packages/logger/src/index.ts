@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+import { ILogger } from "@estates/types";
 import chalk from "chalk";
 import { Writable } from "stream";
 import { inspect } from "util";
-import { logPrompt, LogLevelStrings} from "./types";
+import { logPrompt, LogLevelStrings } from "./types";
 import { Buffer } from "buffer";
-export class Logger {
-    private serviceName: string;
+export class Logger implements ILogger {
+    public serviceName: string;
     public logStream;
     constructor(serviceName: string) {
         this.serviceName = serviceName;
@@ -17,7 +18,7 @@ export class Logger {
             },
         });
     }
-    public pipe(logger: Logger) {
+    public pipe(logger: ILogger) {
         logger.logStream.pipe(this.logStream);
     }
 

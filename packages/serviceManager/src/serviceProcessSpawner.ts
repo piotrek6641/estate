@@ -5,39 +5,47 @@ import { EventBus } from "@estates/event-bus";
 import { EventEmitter } from "events";
 
 export class serviceProcessSpawner {
+    // eslint-disable-next-line no-use-before-define
+    private static instance: serviceProcessSpawner;
     serviceManagerProcess?: ChildProcessWithoutNullStreams;
     eventBus = EventBus.getInstance();
     private emitter: EventEmitter;
+    public isFinished = new Promise<void>((res, rej) => {});
 
-    constructor () {
+    private constructor () {
         this.emitter = new EventEmitter();
+        this.emitter.on("finished", () => {
+            this.isFinished = Promise.resolve();
+        });
     }
 
-    async startProcess() {
-        return new Promise<number | undefined >((res,rej) => {
+    public static getInstance(): serviceProcessSpawner {
+        if (!serviceProcessSpawner.instance) {
+            serviceProcessSpawner.instance = new serviceProcessSpawner();
+        }
+
+        return serviceProcessSpawner.instance;
+    }
+
+    startProcess() {
+        return new Promise<void>((res,_rej) => {
             // eslint-disable-next-line no-undef
             const serviceManagerProcess = spawn("ts-node", [__dirname + "/start.ts"]);
             serviceManagerProcess.stdout.pipe(process.stdout);
-
             serviceManagerProcess.on("close", (code: number) => {
                 console.log(`ServiceManager process exited with code ${code}`);
             });
             serviceManagerProcess.stderr.on("data", (data: unknown) => {
-                rej(`ServiceManager stderr: ${data}`);
+                throw new Error(`ServiceManager stderr: ${data}`);
             });
             this.serviceManagerProcess = serviceManagerProcess;
+            res();
         });
+
     }
     stopProcess() {
         console.log("killing process");
         this.serviceManagerProcess?.kill(1);
-    }
-    public async waitForFinishBooting() {
-        return new Promise<unknown>((res, _rej) => {
-            this.emitter.on("finished", () => {
-                res("finished");
-            });
-        });
     }
     emit(eventName: string, data?: string) {
         console.log(eventName);

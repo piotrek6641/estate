@@ -1,12 +1,28 @@
 import { ServiceManager } from ".";
 import { EventEmitter } from "events";
+import { serviceProcessSpawner } from "./serviceProcessSpawner";
 
 export class ServiceBuilder {
+    // eslint-disable-next-line no-use-before-define
+    private static instance: ServiceBuilder;
     private serviceManager: ServiceManager | undefined;
     private emitter: EventEmitter;
+    private isFinished: boolean = false;
+    public processSpawner?: serviceProcessSpawner;
 
-    constructor () {
+    private constructor () {
         this.emitter = new EventEmitter();
+        this.emitter.on("finished", () => {
+            this.isFinished = true;
+        },
+        );
+    }
+    public static getInstance(): ServiceBuilder {
+        if (!ServiceBuilder.instance) {
+            ServiceBuilder.instance = new ServiceBuilder();
+        }
+
+        return ServiceBuilder.instance;
     }
 
     public buildServiceManager() {
@@ -25,13 +41,15 @@ export class ServiceBuilder {
     }
     public async waitForFinishBooting() {
         return new Promise<unknown>((res, _rej) => {
-            this.emitter.on("finished", () => {
-                res("finished");
-            });
+            const timer = setInterval(() => {
+                if (this.isFinished) {
+                    res("finished");
+                    clearInterval(timer);
+                }
+            }, 500);
         });
     }
     emit(eventName: string, data?: string) {
-        console.log(eventName);
         this.emitter.emit(eventName, data);
     }
 }

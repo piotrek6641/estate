@@ -2,12 +2,13 @@
   "name": "estate",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "start:service-manager": "ts-node-dev --respawn  packages/serviceManager/src/start.ts",
+    "start:docker": "ts-node packages/dockerService/src/start.ts"
+  },
   "workspaces": [
     "packages/*"
   ],
-  "scripts": {
-    "start:service-manager": "ts-node-dev --respawn  packages/serviceManager/src/start.ts"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",

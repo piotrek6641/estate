@@ -1,0 +1,22 @@
+{
+  "name": "@estates/docker-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@estates/logger": "^1.0.0",
+    "@estates/types": "^1.0.0",
+    "dockerode": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^3.3.21",
+    "@types/node": "^20.8.9"
+  }
+}

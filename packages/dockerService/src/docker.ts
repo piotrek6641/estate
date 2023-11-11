@@ -1,23 +1,35 @@
 import Docker = require("dockerode");
 import { Logger } from "@estates/logger";
 import process = require("process");
+import { DockerEnvVariable } from "@estates/types";
 const docker = new Docker();
-
-const containerName = "mongo-db";
-
-const envVariables = [
-    "MONGO_INITDB_ROOT_USERNAME: root",
-    "MONGO_INITDB_ROOT_PASSWORD: example",
-];
 
 export class DockerClient {
     logger = new Logger("DockerClient");
+    envVariables: DockerEnvVariable[];
+    containerName: string;
+    imageName: string;
+    exposedPort: number;
+    hostPort: number;
+    container?: Docker.Container;
+    constructor(
+        dockerEnvVaraibles: DockerEnvVariable[],
+        containerName: string,
+        imageName: string,
+        exposedPort: number,
+        hostPort: number) {
+        this.envVariables = dockerEnvVaraibles;
+        this.containerName = containerName;
+        this.imageName = imageName;
+        this.exposedPort = exposedPort;
+        this.hostPort = hostPort;
+    }
     async pullDBImage() {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise<void>(async (res, rej) => {
             try {
                 const stream = await docker.createImage({
-                    fromImage: "mongo:7.0",
+                    fromImage: this.imageName,
                 });
                 stream.pipe(process.stdout);
 
@@ -38,21 +50,22 @@ export class DockerClient {
     async createAndStartDockerContainer() {
         try {
             try {
-                const existingContainer = docker.getContainer(containerName);
+                const existingContainer = docker.getContainer(this.containerName);
                 if (existingContainer) await existingContainer.remove({ force: true });
             } catch {
                 // do nothing
             }
             const container = await docker.createContainer({
-                name: containerName,
-                Image: "mongo:7.0",
-                Env: envVariables,
-                ExposedPorts: { "27017/tcp": {} },
+                name: this.containerName,
+                Image: this.imageName,
+                Env: this.envVariables,
+                ExposedPorts: { [`${this.exposedPort}/tcp`]: {} },
                 HostConfig: {
-                    PortBindings: { "27017/tcp": [{ HostPort: "27017" }] },
+                    PortBindings: { [`${this.exposedPort}/tcp`]: [{ HostPort: this.hostPort.toString() }] },
                 },
             });
             await container.start();
+            this.container = container;
             this.logger.info("Container created and started successfully.");
         } catch (error) {
             throw new Error("Error creating and starting the container:" + error);
@@ -65,7 +78,7 @@ export class DockerClient {
 
         while (attempts < maxAttempts) {
             try {
-                const container = docker.getContainer(containerName);
+                const container = docker.getContainer(this.containerName);
                 const containerInfo = await container.inspect();
                 if (containerInfo.State?.Status === "running") {
                     this.logger.info("Container is healthy and booted successfully.");

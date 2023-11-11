@@ -21,41 +21,48 @@ export class Logger implements ILogger {
     public pipe(logger: ILogger) {
         logger.logStream.pipe(this.logStream);
     }
-
-    public log(message: string, logLevel: LogLevelStrings, object?: unknown) {
-        const timestamp = new Date().toISOString();
-
-        let colorFunction;
+    private getColorFunction(logLevel: LogLevelStrings) {
         switch (logLevel) {
         case "info":
-            colorFunction = chalk.blue;
-            break;
+            return chalk.blue;
         case "debug":
-            colorFunction = chalk.blueBright;
-            break;
+            return chalk.blueBright;
         case "warning":
-            colorFunction = chalk.yellow;
-            break;
+            return chalk.yellow;
         case "error":
-            colorFunction = chalk.red;
-            break;
+            return chalk.red;
         default:
-            colorFunction = chalk.white;
+            return chalk.white;
         }
-
-        this.logStream.write(`[${chalk.green(timestamp)}] [${chalk.magenta(this.serviceName)}] [${colorFunction(logLevel.toUpperCase())}] ${message}${object !== undefined ? ` ${inspect(object, { depth: null, colors: true, compact: true })}` : ""}`);
     }
-    public info: logPrompt = (message, object) => {
-        this.log(message, "info", object);
+    private stringifyObject(object: unknown) {
+        if (typeof object === "object" && object !== null) {
+            return inspect(object, { depth: null, colors: true, compact: true });
+        } else if (!object) return "null";
+        return object.toString();
+
+    }
+
+    public log(message: string, logLevel: LogLevelStrings, ...args: unknown[]) {
+        const timestamp = new Date().toISOString();
+        const colorFunction = this.getColorFunction(logLevel);
+        const formattedObject = args.map((arg) => this.stringifyObject(arg)).join(" ");
+        this.logStream.write(`[${chalk.green(timestamp)}] [${chalk.magenta(this.serviceName)}] [${colorFunction(logLevel.toUpperCase())}] ${message} ${formattedObject}`);
+    }
+    public info: logPrompt = (message, ...args) => {
+        this.log(message, "info", ...args);
     };
-    public debug: logPrompt = (message, object) => {
-        this.log(message, "debug", object);
+
+    public debug: logPrompt = (message, ...args) => {
+        this.log(message, "debug", ...args);
     };
-    public error: logPrompt = (message, object) => {
-        this.log(message, "error", object);
+
+    public error: logPrompt = (message, ...args) => {
+        this.log(message, "error", ...args);
     };
-    public warning: logPrompt = (message, object) => {
-        this.log(message, "warning", object);
+
+    public warning: logPrompt = (message, ...args) => {
+        this.log(message, "warning", ...args);
     };
 }
 

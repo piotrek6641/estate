@@ -1,8 +1,10 @@
 import { HttpHandler } from "@estates/types";
 import { IncomingMessage, ServerResponse } from "http";
+import Server from "http-proxy";
 
 export abstract class AbstractHttpRouter {
     private routes: { [key: string]: { [key: string]: HttpHandler } };
+    protected proxy?: Server;
 
     constructor() {
         this.routes = {
@@ -17,9 +19,9 @@ export abstract class AbstractHttpRouter {
     post(url: string, handler: HttpHandler) {
         this.routes.POST[url] = handler;
     }
-    protected checkIfRouteNotExist(method: string, url: string) {
-        if (!this.routes[method] && !this.routes[method][url]) {
-            return { statusCode: 404, message: "not found" };
+    checkIfRouteNotExist(method: string, url: string) {
+        if (!this.routes[method] || !this.routes[method][url]) {
+            return { statusCode: 404, message: "Not Found" };
         }
     }
     route(req: IncomingMessage, res: ServerResponse) {
@@ -33,5 +35,8 @@ export abstract class AbstractHttpRouter {
             return;
         }
         this.routes[method][url](req, res);
+    }
+    setProxy(proxy: Server) {
+        this.proxy = proxy;
     }
 }

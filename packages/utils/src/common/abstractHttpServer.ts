@@ -4,7 +4,7 @@ import { Server, createServer, IncomingMessage, ServerResponse } from "http";
 export abstract class AbstractHttpServer {
     protected server: Server;
     public logger: ILogger;
-    protected port: number;
+    public port: number;
     public constructor(port: number, serviceName: string ) {
         this.port = port;
         this.logger = new Logger(serviceName);
@@ -13,7 +13,7 @@ export abstract class AbstractHttpServer {
     }
     // eslint-disable-next-line no-unused-vars
     abstract handleRequest(request: IncomingMessage, response: ServerResponse): void;
-    public async startServer() {
+    public async startServer(): Promise<Server<typeof IncomingMessage, typeof ServerResponse>> {
         return new Promise((resolve, reject) => {
             this.server.listen(this.port, () => {
                 this.logger.info(`Server is running on port ${this.port}`);

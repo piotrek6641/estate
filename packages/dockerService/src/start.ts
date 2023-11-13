@@ -14,6 +14,9 @@ const imageName = "mongo:7.0";
 async function start() {
     const dockerClient = new DockerClient(envVariables, containerName, imageName, 27017, 27017 );
     const containerManager = new ContainerManager(dockerClient);
+    process.once("SIGINT", async () => {
+        await containerManager.killContainer();
+    });
     await containerManager.startContainer();
     await containerManager.waitForContainerToExit();
 }

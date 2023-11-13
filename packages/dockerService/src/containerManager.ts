@@ -4,6 +4,7 @@ export class ContainerManager {
     private dockerClient: DockerClient;
     constructor(dockerClient: DockerClient) {
         this.dockerClient = dockerClient;
+        // eslint-disable-next-line no-undef
     }
     async startContainer() {
         try {
@@ -33,6 +34,15 @@ export class ContainerManager {
             this.dockerClient.container?.wait((err, data) => {
                 if(err) rej(err);
                 this.dockerClient.logger.info("Docker container exited", data);
+                res();
+            });
+        });
+    }
+    public async killContainer() {
+        return new Promise<void>((res, rej) => {
+            this.dockerClient.container?.kill((err) => {
+                if(err) rej(err);
+                this.dockerClient.logger.info("Docker container killed");
                 res();
             });
         });

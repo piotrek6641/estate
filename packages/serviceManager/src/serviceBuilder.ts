@@ -24,7 +24,7 @@ export class ServiceBuilder {
         return this.serviceManager;
     }
     public async waitForFinishBooting() {
-        return new Promise<unknown>((res, _rej) => {
+        return new Promise<unknown>((res) => {
             this.emitter.on("finished", () => {
                 res("finished");
             });

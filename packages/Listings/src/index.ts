@@ -1,12 +1,11 @@
-//import { Router } from "./router";
-import { AbstractHttpServerProxy } from "@estates/utils";
-import { IncomingMessage, ServerResponse } from "http";
+import { ListingsServer } from "./server";
 
-export class Listings extends AbstractHttpServerProxy {
-    constructor () {
-        super(11000,"Listings");
+export class Listings {
+    server;
+    constructor (port?: number) {
+        this.server = new ListingsServer(port, "Listings");
     }
-    handleRequest(request: IncomingMessage, response: ServerResponse<IncomingMessage>): void {
-        this.proxy.web(request ,response, { target:"http://localhost:13000" });
+    async startServer() {
+        await this.server.startServer();
     }
 }

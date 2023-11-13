@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { HttpMethod } from "./../utils";
+import { HttpMethod } from "@estates/types";
 
 export type RequestString<Method extends HttpMethod, URL extends string> = `${Method} ${URL}`;
 type RouteConfig = {

@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@estates/logger": "*",
+    "@estates/types": "^1.0.0",
     "@estates/utils": "^1.0.0",
     "http-proxy": "^1.18.1"
   },

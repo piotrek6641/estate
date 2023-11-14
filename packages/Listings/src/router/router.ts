@@ -1,29 +1,78 @@
-import { IncomingMessage, ServerResponse } from "http";
-import { createShortendUrl } from "@estates/utils";
-import { RequestString, defineApiRoutes } from "./routes";
-import { HttpMethod } from "@estates/types";
+import { AbstractHttpRouter } from "@estates/utils";
+import { DatabaseClient } from "@estates/database-client";
+import { parse } from "url";
+import { model } from "mongoose";
+import { listingSchema } from "@estates/database-schemas";
+import { IListing } from "@estates/types";
 
-export class Router {
-    private routes = defineApiRoutes();
+export class Router extends AbstractHttpRouter {
+    private databaseClient?: DatabaseClient;
 
-    public handleRequest(req: IncomingMessage, res: ServerResponse) {
-        const url = createShortendUrl(req.url);
-
-        if (!req.method && url) return;
-
-        const method = req.method as HttpMethod;
-        const routeKey: RequestString<HttpMethod, string> = `${method} ${url}`;
-        const routeHandler = this.routes[routeKey];
-
-        if (routeHandler) {
-            routeHandler(req, res);
-        } else {
-            this.handleNotFound(res);
-        }
+    constructor (databaseClient: DatabaseClient) {
+        super();
+        this.databaseClient = databaseClient;
     }
+    defineApiRoutes() {
+        this.get("/get-all", (req, res) => {
+            res.writeHead(200)
+                .end("some data");
+        });
 
-    private handleNotFound(res: ServerResponse) {
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.end("Not Found");
+        this.get("/get", async (req, res) => {
+            const query = parse(req.url as string).query?.split("=");
+            if ( query && query[0] === "id" && query[1]) {
+                let result;
+                try {
+                    const dbQuery = await this.databaseClient?.getListing(query[1]);
+                    result = JSON.stringify(dbQuery);
+                } catch(e) {
+                    this.databaseClient?.logger.error(e as string);
+                    res.writeHead(404)
+                        .end("Not Found");
+                    return;
+                }
+                res.appendHeader("Content-Type", "application/json");
+                res.writeHead(200)
+                    .end(result);
+
+                return;
+            }
+
+            res.appendHeader("Content-Type", "application/json");
+            res.writeHead(400)
+                .write(JSON.stringify({
+                    message: "Bad Request",
+                    Error: "Wrong query parameter: id is required!",
+                }));
+            res.end();
+
+        });
+        this.post("/add-listing", async (req, res) => {
+            let reqData = "";
+            req.on("data", (chunk) => {
+                reqData += chunk;
+            });
+            req.on("end", async () => {
+                const parsedReqData: IListing= JSON.parse(reqData);
+                const Listing = model<IListing>("Listing", listingSchema);
+                const listing = new Listing(parsedReqData);
+                const error = listing.validateSync();
+                if (error) {
+                    res.writeHead(400)
+                        .write(JSON.stringify({
+                            message: "Bad Request",
+                            Error: "Unable to validate schema!",
+                        }));
+                    res.end();
+
+                    return;
+                }
+
+                const dbData = await this.databaseClient?.addNewListing(parsedReqData);
+                res.writeHead(200)
+                    .end(dbData);
+            });
+
+        });
     }
 }

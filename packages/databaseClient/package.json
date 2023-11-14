@@ -1,5 +1,5 @@
 {
-  "name": "@estates/database-service",
+  "name": "@estates/database-client",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
@@ -11,15 +11,18 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@estates/types": "^1.0.0",
     "@types/dockerode": "^3.3.21",
     "@types/node": "^20.8.9",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@estates/database-schemas": "^1.0.0",
     "@estates/logger": "*",
     "@estates/utils": "^1.0.0",
     "dockerode": "^4.0.0",
-    "mongodb": "^6.2.0"
+    "mongodb": "^6.2.0",
+    "mongoose": "^8.0.0"
   }
 }

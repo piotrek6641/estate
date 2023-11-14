@@ -1,5 +1,5 @@
 {
-  "name": "@estates/servicemanager",
+  "name": "@estates/service-manager",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
@@ -12,10 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "@estates/api-gateway": "*",
-    "@estates/database-service": "*",
+    "@estates/database-client": "^1.0.0",
     "@estates/event-bus": "^1.0.0",
     "@estates/listings": "*",
-    "@estates/logger": "*"
+    "@estates/logger": "*",
+    "@estates/utils": "^1.0.0"
   },
   "devDependencies": {
     "typescript": "^5.2.2"

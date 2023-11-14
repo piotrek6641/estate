@@ -2,7 +2,7 @@ import { listingSchema } from "@estates/database-schemas";
 import { Logger } from "@estates/logger";
 import { IListing } from "@estates/types";
 import { MongoClient } from "mongodb";
-import { model, connect } from "mongoose";
+import { model, connect, disconnect } from "mongoose";
 
 export class DatabaseClient {
     logger;
@@ -10,6 +10,17 @@ export class DatabaseClient {
     constructor() {
         this.logger = new Logger("DatabaseService");
         this.sendHandshake();
+    }
+    private async connect() {
+        await connect(this.connectionString, {
+            auth: {
+                username: "admin",
+                password: "password",
+            },
+        });
+    }
+    private async disconnect() {
+        await disconnect();
     }
     private async sendHandshake() {
         try {
@@ -24,12 +35,7 @@ export class DatabaseClient {
     }
     public async addNewListing(reqBody: IListing) {
         const Listing = model<IListing>("Listing", listingSchema);
-        await connect(this.connectionString, {
-            auth: {
-                username: "admin",
-                password: "password",
-            },
-        });
+        this.connect();
         const listing = new Listing({
             title: reqBody.title,
             bathrooms: reqBody.bathrooms,
@@ -37,17 +43,24 @@ export class DatabaseClient {
             description: reqBody.description,
             price: reqBody.price,
         });
-        return (await listing.save())._id.toJSON();
+        const id = (await listing.save())._id.toJSON();
+        await this.disconnect();
+
+        return id;
     }
     public async getListing(id: string) {
-        await connect(this.connectionString, {
-            auth: {
-                username: "admin",
-                password: "password",
-            },
-        });
+        await this.connect();
         const Listing = model<IListing>("Listing", listingSchema);
-        return await Listing.findById(id);
+        const result = await Listing.findById(id);
+        this.disconnect();
+        return result;
+    }
+    public async getAll() {
+        await this.connect();
+        const Listings = model<IListing>("Listing", listingSchema);
+        const result = await Listings.find({});
+        this.disconnect();
+        return result;
     }
 
 }

@@ -13,9 +13,30 @@ export class Router extends AbstractHttpRouter {
         this.databaseClient = databaseClient;
     }
     defineApiRoutes() {
-        this.get("/get-all", (req, res) => {
+        this.get("/get-all", async (req, res) => {
+            let dbResult;
+            try {
+                dbResult = await this.databaseClient?.getAll();
+            } catch {
+                res.writeHead(500)
+                    .write(JSON.stringify({
+                        "message": "Internal Server Error",
+                    }));
+                res.end();
+
+                return;
+            }
+            try {
+                dbResult = JSON.stringify(dbResult);
+            } catch {
+                console.log("unable to parse database result");
+                res.writeHead(500);
+                res.end();
+
+                return;
+            }
             res.writeHead(200)
-                .end("some data");
+                .end(dbResult);
         });
 
         this.get("/get", async (req, res) => {

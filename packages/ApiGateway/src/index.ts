@@ -29,6 +29,5 @@ export class ApiGateway extends AbstractHttpServerProxy {
             response.writeHead(404, { "Content-Type": "text/plain" });
             response.end("Route not found");
         }
-        this.proxy.web(request ,response, { target: "http://localhost:13000" });
     }
 }

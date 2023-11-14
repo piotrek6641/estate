@@ -1,6 +1,8 @@
 import { HttpHandler } from "@estates/types";
 import { IncomingMessage, ServerResponse } from "http";
 import Server from "http-proxy";
+import { createShortendUrl } from "../helpers/urlHelpers";
+import { parse } from "url";
 
 export abstract class AbstractHttpRouter {
     private routes: { [key: string]: { [key: string]: HttpHandler } };
@@ -25,18 +27,18 @@ export abstract class AbstractHttpRouter {
         }
     }
     route(req: IncomingMessage, res: ServerResponse) {
-        const method = req.method as string;
-        const url = req.url as string;
 
-        const isRouteNotExisting = this.checkIfRouteNotExist(method, url);
+        const method = req.method as string;
+
+        const url = createShortendUrl(req.url as string) as string;
+        const parsedUrl = parse(url);
+        const pathname = parsedUrl.pathname as string;
+        const isRouteNotExisting = this.checkIfRouteNotExist(method, pathname);
         if (isRouteNotExisting) {
-            res.writeHead(isRouteNotExisting.statusCode, { "Content-Type": "text/plain" });
-            res.end(isRouteNotExisting.message);
+            res.writeHead(isRouteNotExisting.statusCode, { "Content-Type": "text/plain" })
+                .end(isRouteNotExisting.message);
             return;
         }
-        this.routes[method][url](req, res);
-    }
-    setProxy(proxy: Server) {
-        this.proxy = proxy;
+        this.routes[method][pathname](req, res);
     }
 }
